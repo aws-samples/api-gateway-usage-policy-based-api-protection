@@ -2,10 +2,12 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { ApiKeySourceType, AuthorizationType } from 'aws-cdk-lib/aws-apigateway'
+import { AwsSolutionsChecks } from 'cdk-nag';
 
 import { DEPLOY_REGION, STACK_PREFIX } from './cognito_pool/constants';
 import { ApigatewayStack } from './api-gateway/rest_api';
 import { CognitoStack } from './cognito_pool/cognito_stack';
+import { Aspects } from 'aws-cdk-lib';
 
 
 const app = new cdk.App();
@@ -45,3 +47,5 @@ if (!API_KEY.localeCompare("NOT_DEFINED")) {
         tags: { env: 'dev' }
     }).addDependency(cognitoStack)
 }
+
+Aspects.of(app).add(new AwsSolutionsChecks)
