@@ -6,7 +6,7 @@ import { ApiKeySourceType, AuthorizationType } from 'aws-cdk-lib/aws-apigateway'
 import { DEPLOY_REGION, STACK_PREFIX } from './cognito_pool/constants';
 import { ApigatewayStack } from './api-gateway/rest_api';
 import { CognitoStack } from './cognito_pool/cognito_stack';
-
+import { AwsSolutionsChecks } from 'cdk-nag';
 
 const app = new cdk.App();
 
@@ -45,3 +45,5 @@ if (!API_KEY.localeCompare("NOT_DEFINED")) {
         tags: { env: 'dev' }
     }).addDependency(cognitoStack)
 }
+
+cdk.Aspects.of(app).add(new AwsSolutionsChecks)

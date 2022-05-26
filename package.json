@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "aws-cdk-lib": "2.21.1",
+    "cdk-nag": "^2.14.14",
     "constructs": "^10.0.0",
     "source-map-support": "^0.5.16",
     "src": "file:aws-usage-policy-stack/lambda/src"
