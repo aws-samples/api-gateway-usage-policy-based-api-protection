@@ -22,10 +22,10 @@ Target architecture:
 #### Prerequisites
 To deploy the solution,
 
-1. An AWS Account(https://signin.aws.amazon.com/signin?redirect_uri=https%3A%2F%2Fportal.aws.amazon.com%2Fbilling%2Fsignup%2Fresume&client_id=signup)
-2. An AWS Identity and Access Management (IAM) administrator access(http://aws.amazon.com/iam)
-3. The AWS Command Line Interface (AWS CLI)(https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
-4. Install AWS CDK(https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html)
+1. [An AWS Account](https://signin.aws.amazon.com/signin?redirect_uri=https%3A%2F%2Fportal.aws.amazon.com%2Fbilling%2Fsignup%2Fresume&client_id=signup)
+2. [An AWS Identity and Access Management (IAM) administrator access](http://aws.amazon.com/iam)
+3. [The AWS Command Line Interface (AWS CLI)](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+4. [Install AWS CDK](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html)
 
 
 #### Deploy cloud solution
@@ -47,7 +47,7 @@ cost for using this sample. For full details, see the pricing pages for each AWS
 2. Deploy Amazon Cognito Resources
 
     1.	Configure user pool in Amazon Cognito
-    npx cdk deploy CognitoStack
+        * `npx cdk deploy CognitoStack`     deploy Cognito stack
     2.	Once successfully deployed, open AWS Console and select Amazon Cognito service. choose manage user pool and select your user pool. Note down pool id under general settings.
 
     <p align="center">
@@ -56,18 +56,18 @@ cost for using this sample. For full details, see the pricing pages for each AWS
 
     3.	Create a user with tenant id.
 
-    aws cognito-idp admin-create-user --user-pool-id <REPLACE WITH COGNITO POOL ID> --username <REPLACE WITH USERNAME> \
-    --user-attributes Name="given_name",Value="<REPLACE WITH FIRST NAME>" Name="family_name",Value="<REPLACE WITH LAST NAME>" " Name="custom:tenant_id",Value="<REPLACE WITH CUSTOMER ID>" \
-    --temporary-password change1t
+        * `aws cognito-idp admin-create-user --user-pool-id <REPLACE WITH COGNITO POOL ID> --username <REPLACE WITH USERNAME> \
+        --user-attributes Name="given_name",Value="<REPLACE WITH FIRST NAME>" Name="family_name",Value="<REPLACE WITH LAST NAME>" " Name="custom:tenant_id",Value="<REPLACE WITH CUSTOMER ID>" \
+        --temporary-password change1t`
 
-    e.g.
-    aws cognito-idp admin-create-user --user-pool-id eu-west-1_ABCBCBCB --username abc@xyz.com \
-    --user-attributes Name="given_name",Value="John" Name="family_name",Value="Smith" Name="custom:tenant_id",Value="customer1" \
-    --temporary-password change1t
+        e.g.
+        * `aws cognito-idp admin-create-user --user-pool-id eu-west-1_ABCBCBCB --username abc@xyz.com \
+        --user-attributes Name="given_name",Value="John" Name="family_name",Value="Smith" Name="custom:tenant_id",Value="customer1" \
+        --temporary-password change1t`
 
     4.	Testing oauth flow via browser can be cumbersome. So you can use [openidconnect](https://openidconnect.net/) to test auth flow. In the configuration of openidconnect.net, configure JWKS well know URI 
     e.g. 
-    https://cognito-idp.<REPLACE WITH AWS REGION>.amazonaws.com/<REPLACE WITH COGNITO POOL ID>/.well-known/openid-configuration 
+        * `https://cognito-idp.<REPLACE WITH AWS REGION>.amazonaws.com/<REPLACE WITH COGNITO POOL ID>/.well-known/openid-configuration`
     e.g. 
     https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_ABdffdfdf/.well-known/openid-configuration
 
@@ -78,7 +78,7 @@ Deploy Amazon API Gateway resources
 
 1.	Open aws-usage-policy-stack/app.ts in an IDE and replace “NOT_DEFINED” with 20 chars long tenant id from step 3 in Deploy Amazon Cognito Resources. 
 2.	Configure user pool in Amazon API Gateway and upload Lambda
-npx cdk deploy ApigatewayStack
+    * `npx cdk deploy ApigatewayStack`  deploy Api Gateway stack
 
 3.	After successful deployment of API Gateway stack, open AWS console and select Amazon API Gateway. Locate ProductRestApi in name column and note down its id from id column as highlighted in below screen.
 
@@ -95,7 +95,7 @@ We configured the “/products” API Quota limit to 5 per Day and throttle limi
 
 Execute the following command 5 times after replacing placeholders with the correct values. You should receive the message {"message": "Limit Exceeded"} after you execute below command for the sixth time. You can manually change the quota limits in usage plan in AWS Console and repeat the tests.
 
-curl -H "Authorization: Bearer <REPLACE WITH ID_TOKEN received in step 5 of Deploy Amazon Cognito Resources>" -X GET https://<REPLACE WITH REST API ID noted in step 3 of Deploy Amazon API Gateway resources>.execute-api.eu-west-1.amazonaws.com/dev/products.
+`curl -H "Authorization: Bearer <REPLACE WITH ID_TOKEN received in step 5 of Deploy Amazon Cognito Resources>" -X GET https://<REPLACE WITH REST API ID noted in step 3 of Deploy Amazon API Gateway resources>.execute-api.eu-west-1.amazonaws.com/dev/products.`
 
 You can monitor HTTP/2 429 exceptions (Limit Exceeded) in Amazon API Gateway dashboard when API Gateway throttles the requests.
 
