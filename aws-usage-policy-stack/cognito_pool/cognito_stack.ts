@@ -31,13 +31,6 @@ export class CognitoStack extends Stack {
                 }
             );
 
-            const { userPoolUser } = new UserPoolUserConstruct(
-                this,
-                'userpooluser',
-                {
-                    userPoolId: userPool.userPoolId
-                }
-            );
 
             new CfnOutput(this, 'region', { value: Stack.of(this).region });
 
@@ -57,11 +50,6 @@ export class CognitoStack extends Stack {
                 description: 'name of cognito pool idt',
                 exportName: 'CognitoUserPoolId',
             });
-
-            new CfnOutput(this, 'userpoolUser', {
-                value: userPoolUser.toString(),
-            });
-
         }
     }
 }
