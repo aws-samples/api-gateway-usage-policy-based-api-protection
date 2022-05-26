@@ -74,13 +74,13 @@ cost for using this sample. For full details, see the pricing pages for each AWS
     5.	Test Oauth flow [open id connect](https://openidconnect.net/) using to get the JWT ID Token. Save the token in nodepad.
 
 
-Deploy Amazon API Gateway resources
+3. Deploy Amazon API Gateway resources
 
-1.	Open aws-usage-policy-stack/app.ts in an IDE and replace “NOT_DEFINED” with 20 chars long tenant id from step 3 in Deploy Amazon Cognito Resources. 
-2.	Configure user pool in Amazon API Gateway and upload Lambda
-    * `npx cdk deploy ApigatewayStack`  deploy Api Gateway stack
+    1.	Open aws-usage-policy-stack/app.ts in an IDE and replace “NOT_DEFINED” with 20 chars long tenant id from step 3 in Deploy Amazon Cognito Resources. 
+    2.	Configure user pool in Amazon API Gateway and upload Lambda
+        * `npx cdk deploy ApigatewayStack`  deploy Api Gateway stack
 
-3.	After successful deployment of API Gateway stack, open AWS console and select Amazon API Gateway. Locate ProductRestApi in name column and note down its id from id column as highlighted in below screen.
+    3.	After successful deployment of API Gateway stack, open AWS console and select Amazon API Gateway. Locate ProductRestApi in name column and note down its id from id column as highlighted in below screen.
 
     <p align="center">
     <img src="docs/Api-gateway-api-id.png" alt="API Gateway Deployed API id" />
@@ -99,9 +99,9 @@ Execute the following command 5 times after replacing placeholders with the corr
 
 You can monitor HTTP/2 429 exceptions (Limit Exceeded) in Amazon API Gateway dashboard when API Gateway throttles the requests.
 
-    <p align="center">
-    <img src="docs/api-gateway-dashboard.png" alt="API Gateway metrics dashboard" />
-    </p>
+<p align="center">
+<img src="docs/api-gateway-dashboard.png" alt="API Gateway metrics dashboard" />
+</p>
 
 Any changes to usage plan limits do not need redeployment of API in Amazon API Gateway. You can change limits dynamically. However, please note that it may take 5-10 sec to come limits into effect.
 
