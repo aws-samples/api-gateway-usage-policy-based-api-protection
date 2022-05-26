@@ -1,2 +1,7 @@
 *DS_Store
 *MACOSX
+*.js
+*.d.ts
+node_modules
+cdk.out
+*.bkup

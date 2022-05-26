@@ -4,6 +4,8 @@ import { UserPoolDomainConstruct } from './constructs/userpool_domain';
 import { UserPoolConstruct } from './constructs/user_pool';
 import { UserPoolClientConstruct } from './constructs/user_pool_client';
 
+import { UserPoolUserConstruct } from './constructs/user_pool_user';
+
 export class CognitoStack extends Stack {
     public readonly cognito_pool_id: string;
     constructor(scope: App, id: string, props?: StackProps) {
@@ -29,6 +31,14 @@ export class CognitoStack extends Stack {
                 }
             );
 
+            const { userPoolUser } = new UserPoolUserConstruct(
+                this,
+                'userpooluser',
+                {
+                    userPoolId: userPool.userPoolId
+                }
+            );
+
             new CfnOutput(this, 'region', { value: Stack.of(this).region });
 
             new CfnOutput(this, 'userPoolId', { value: userPool.userPoolId });
@@ -46,6 +56,10 @@ export class CognitoStack extends Stack {
                 value: userPool.userPoolId,
                 description: 'name of cognito pool idt',
                 exportName: 'CognitoUserPoolId',
+            });
+
+            new CfnOutput(this, 'userpoolUser', {
+                value: userPoolUser.toString(),
             });
 
         }

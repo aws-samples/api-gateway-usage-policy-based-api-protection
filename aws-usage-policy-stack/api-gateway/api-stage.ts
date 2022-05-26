@@ -20,9 +20,6 @@ export class ApiDeploymentStageNestedStack extends NestedStack {
             }
         }
 
-        // const [devStage, testStage, prodStage] = ['dev', 'test', 'prod'].map(item =>
-        //     new apigw.Stage(this, `${item}`, { deployment, stageName: item }));
-
         const [devStage] = ['dev'].map(item =>
             new Stage(this, `${item}`, { deployment, stageName: item }));
 

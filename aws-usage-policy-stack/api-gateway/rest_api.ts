@@ -9,8 +9,7 @@ import { App, CfnOutput, Fn, Stack, StackProps } from 'aws-cdk-lib';
 import { MultiTenantProductApiStack } from './multi-tenant-product-api'
 import { ApiDeploymentStageNestedStack } from './api-stage';
 import { LambdaCustomAuthorizer } from '../lambda/lambda_stack';
-import { AssetCode, LayerVersion, Runtime } from 'aws-cdk-lib/aws-lambda';
-import { LegendPosition } from 'aws-cdk-lib/aws-cloudwatch';
+
 
 export class ApigatewayStack extends Stack {
 
@@ -47,12 +46,6 @@ export class ApigatewayStack extends Stack {
             api: restApi
         });
 
-
-        // const productApiKey = new ApiKey(this, "ProductApiKey", {
-        //     apiKeyName: 'ProductApiKey',
-        //     value: 'customer2-abcbabcbabbcbcbcbcbcbcbcbccbcbcbcbcbcb',
-        //     enabled: true
-        // })
         const productApiKey = new ApiKey(this, "ProductApiKey", apiKeyprops)
 
         const usagePlan = restApi.addUsagePlan('BasicUsagePlan', {
