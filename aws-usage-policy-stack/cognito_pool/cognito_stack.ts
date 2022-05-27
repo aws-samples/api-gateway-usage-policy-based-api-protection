@@ -4,7 +4,7 @@ import { UserPoolDomainConstruct } from './constructs/userpool_domain';
 import { UserPoolConstruct } from './constructs/user_pool';
 import { UserPoolClientConstruct } from './constructs/user_pool_client';
 
-import { UserPoolUserConstruct } from './constructs/user_pool_user';
+import { NagSuppressions } from 'cdk-nag';
 
 export class CognitoStack extends Stack {
     public readonly cognito_pool_id: string;
@@ -50,6 +50,17 @@ export class CognitoStack extends Stack {
                 description: 'name of cognito pool idt',
                 exportName: 'CognitoUserPoolId',
             });
+
+            NagSuppressions.addStackSuppressions(this, [
+                {
+                    id: 'AwsSolutions-COG3',
+                    reason: 'Demonstrate a stack level suppression.'
+                },
+                {
+                    id: 'AwsSolutions-COG4',
+                    reason: 'The API GW method does not use a Cognito user pool authorizer.'
+                }
+            ])
         }
     }
 }

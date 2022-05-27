@@ -3,6 +3,8 @@ import { Method, MockIntegration, PassthroughBehavior, RestApi } from "aws-cdk-l
 import { Construct } from "constructs";
 import { ResourceNestedStackProps } from "./interface-props";
 
+import { NagSuppressions } from 'cdk-nag';
+
 export class MultiTenantProductApiStack extends NestedStack {
     public readonly methods: Method[] = [];
     constructor(scope: Construct, props: ResourceNestedStackProps) {
@@ -30,5 +32,12 @@ export class MultiTenantProductApiStack extends NestedStack {
         });
 
         this.methods.push(method);
+
+        NagSuppressions.addStackSuppressions(this, [
+            {
+                id: 'AwsSolutions-COG4',
+                reason: 'The API GW method does not use a Cognito user pool authorizer.'
+            }
+        ])
     }
 }

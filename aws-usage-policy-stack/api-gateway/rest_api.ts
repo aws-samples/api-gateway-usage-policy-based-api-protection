@@ -9,7 +9,7 @@ import { App, CfnOutput, Fn, Stack, StackProps } from 'aws-cdk-lib';
 import { MultiTenantProductApiStack } from './multi-tenant-product-api'
 import { ApiDeploymentStageNestedStack } from './api-stage';
 import { LambdaCustomAuthorizer } from '../lambda/lambda_stack';
-
+import { NagSuppressions } from 'cdk-nag';
 
 export class ApigatewayStack extends Stack {
 
@@ -67,6 +67,40 @@ export class ApigatewayStack extends Stack {
         new CfnOutput(this, 'apigateway', { value: restApi.restApiId });
         new CfnOutput(this, 'lambda', { value: lambdaAuthorizerFn.functionName });
 
+        NagSuppressions.addStackSuppressions(this, [
+            {
+                id: 'AwsSolutions-IAM4',
+                reason: 'The IAM user, role, or group uses AWS managed policies.'
+            },
+            {
+                id: 'AwsSolutions-APIG4',
+                reason: 'The API does not implement authorization.'
+            },
+            {
+                id: 'AwsSolutions-COG4',
+                reason: 'The API GW method does not use a Cognito user pool authorizer.'
+            },
+            {
+                id: 'AwsSolutions-IAM4',
+                reason: 'The IAM user, role, or group uses AWS managed policies.'
+            },
+            {
+                id: 'AwsSolutions-APIG6',
+                reason: 'The REST API Stage does not have CloudWatch logging enabled for all methods.'
+            },
+            {
+                id: 'AwsSolutions-APIG2',
+                reason: 'The REST API does not have request validation enabled.'
+            },
+            {
+                id: 'AwsSolutions-APIG6',
+                reason: 'The REST API Stage does not have CloudWatch logging enabled for all methods.'
+            },
+            {
+                id: 'AwsSolutions-APIG1',
+                reason: 'The API does not have access logging enabled.'
+            },
+        ])
 
     }
 }

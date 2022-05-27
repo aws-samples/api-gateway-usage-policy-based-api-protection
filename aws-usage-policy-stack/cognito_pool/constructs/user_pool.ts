@@ -31,11 +31,11 @@ export class UserPoolConstruct extends Construct {
                 isAdmin: new cognito.StringAttribute({ mutable: true }),
             },
             passwordPolicy: {
-                minLength: 6,
+                minLength: 8,
                 requireLowercase: true,
                 requireDigits: true,
-                requireUppercase: false,
-                requireSymbols: false,
+                requireUppercase: true,
+                requireSymbols: true,
             },
             accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
         });
