@@ -100,7 +100,7 @@ To avoid incurring future charges, clean up the resources created. To delete the
     * cdk destroy CognitoStack ApigatewayStack
 
 
-#### Conclusion
+### Conclusion
 
 This post covers the API Gateway usage plan feature to protect multi-tenant APIs from excessive request loads and also as a product offering that enforces customer specific usage quotas. 
 
