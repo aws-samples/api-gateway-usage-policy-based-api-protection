@@ -5,7 +5,7 @@ Amazon Api Gateway usage policy based api protection
    <a href="https://github.com/aws-samples/api-gateway-usage-policy-based-api-protection/actions"><img alt="GitHub Workflow Status" src="https://github.com/aws-samples/api-gateway-usage-policy-based-api-protection/workflows/Unit%20Tests/badge.svg"></a>
 </h1>
 
-This blog post looks at how to protect and monetize multi-tenant APIs using Amazon [API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html). It describes a multi-tenant architecture design pattern based on [a custom tenant ID[(https://docs.aws.amazon.com/cognito/latest/developerguide/custom-attribute-based-multi-tenancy.html)] to onboard customers. A tenant in a multi-tenant platform represents the customer having a group of users with common access, but individuals having specific permissions to the platform.
+This blog post looks at how to protect and monetize multi-tenant APIs using Amazon [API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html). It describes a multi-tenant architecture design pattern based on [a custom tenant ID](https://docs.aws.amazon.com/cognito/latest/developerguide/custom-attribute-based-multi-tenancy.html) to onboard customers. A tenant in a multi-tenant platform represents the customer having a group of users with common access, but individuals having specific permissions to the platform.
 
 ### Architecture
 
