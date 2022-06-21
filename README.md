@@ -28,91 +28,83 @@ To deploy the solution,
 4. [Install AWS CDK](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html)
 
 
-#### Deploy cloud solution
+#### Deploy the example
 
 > **Note**
 You are responsible for the cost of the AWS services used while running this sample deployment. There is no additional
 cost for using this sample. For full details, see the pricing pages for each AWS service that you use in this sample. Prices are subject to change.
 
-1. Local Setup:
+1. Clone the repository to your local machine.
+    * `git clone https://github.com/aws-samples/api-gateway-usage-policy-based-api-protection`
 
-    1. Clone repository to your local.
-        * `git clone https://github.com/aws-samples/api-gateway-usage-policy-based-api-protection`
+2. Prepare the deployment package - The `cdk.json` file tells the CDK Toolkit how to execute your app.
+    * `cdk synth`                                               emits the synthesized CloudFormation template
+    * `npm run build`                                           compile typescript to js
+    * `npm install --prefix aws-usage-policy-stack/lambda/src`  install npm packages
 
-    2. Prepare package - The `cdk.json` file tells the CDK Toolkit how to execute your app.
-        * `cdk synth`                                               emits the synthesized CloudFormation template
-        * `npm run build`                                           compile typescript to js
-        * `npm install --prefix aws-usage-policy-stack/lambda/src`  install npm packages
+3. Configure the user pool in Amazon Cognito
+    * `npx cdk deploy CognitoStack`     deploy Cognito stack
+4.	Open AWS Console and select Amazon Cognito service. choose manage user pool and select your user pool. Note down pool id under general settings.
 
-2. Deploy Amazon Cognito Resources
+<p align="center">
+<img src="docs/user-pool-id.png" alt="Cognito User Pool" />
+</p>
 
-    1.	Configure user pool in Amazon Cognito
-        * `npx cdk deploy CognitoStack`     deploy Cognito stack
-    2.	Once successfully deployed, open AWS Console and select Amazon Cognito service. choose manage user pool and select your user pool. Note down pool id under general settings.
+5.	Create a user with tenant id.
 
-    <p align="center">
-    <img src="docs/user-pool-id.png" alt="Cognito User Pool" />
-    </p>
-
-    3.	Create a user with tenant id.
-
-        * `aws cognito-idp admin-create-user --user-pool-id <REPLACE WITH COGNITO POOL ID> --username <REPLACE WITH USERNAME> \
-        --user-attributes Name="given_name",Value="<REPLACE WITH FIRST NAME>" Name="family_name",Value="<REPLACE WITH LAST NAME>" " Name="custom:tenant_id",Value="<REPLACE WITH CUSTOMER ID>" \
-        --temporary-password change1t`
-
-        e.g.
-        * `aws cognito-idp admin-create-user --user-pool-id eu-west-1_ABCBCBCB --username abc@xyz.com \
-        --user-attributes Name="given_name",Value="John" Name="family_name",Value="Smith" Name="custom:tenant_id",Value="customer1" \
-        --temporary-password change1t`
-
-    4.	Testing oauth flow via browser can be cumbersome. So you can use [openidconnect](https://openidconnect.net/) to test auth flow. In the configuration of openidconnect.net, configure JWKS well know URI 
-    e.g. 
-        * `https://cognito-idp.<REPLACE WITH AWS REGION>.amazonaws.com/<REPLACE WITH COGNITO POOL ID>/.well-known/openid-configuration`
-    e.g. 
-    https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_ABdffdfdf/.well-known/openid-configuration
-
-    5.	Test Oauth flow [open id connect](https://openidconnect.net/) using to get the JWT ID Token. Save the token in nodepad.
+    * `aws cognito-idp admin-create-user --user-pool-id <REPLACE WITH COGNITO POOL ID> --username <REPLACE WITH USERNAME> \
+    --user-attributes Name="given_name",Value="<REPLACE WITH FIRST NAME>" Name="family_name",Value="<REPLACE WITH LAST NAME>" " Name="custom:tenant_id",Value="<REPLACE WITH CUSTOMER ID>" \
+    --temporary-password change1t`
 
 
-3. Deploy Amazon API Gateway resources
+6.	To simplify testing the OAuth flow, use https://openidconnect.net/. In the configuration, set the JWKS well known URI.
+    * `https://cognito-idp.<REPLACE WITH AWS REGION>.amazonaws.com/<REPLACE WITH COGNITO POOL ID>/.well-known/openid-configuration`
 
-    1.	Open aws-usage-policy-stack/app.ts in an IDE and replace “NOT_DEFINED” with 20 chars long tenant id from step 3 in Deploy Amazon Cognito Resources. 
-    2.	Configure user pool in Amazon API Gateway and upload Lambda
-        * `npx cdk deploy ApigatewayStack`  deploy Api Gateway stack
+7.	Test Oauth flow [open id connect](https://openidconnect.net/) using to get the JWT ID Token. Save the token in nodepad.
 
-    3.	After successful deployment of API Gateway stack, open AWS console and select Amazon API Gateway. Locate ProductRestApi in name column and note down its id from id column as highlighted in below screen.
+8.	Open aws-usage-policy-stack/app.ts in an IDE and replace “NOT_DEFINED” with 20 chars long tenant id from step 3 in Deploy Amazon Cognito Resources. 
+9.	Configure user pool in Amazon API Gateway and upload Lambda
+    * `npx cdk deploy ApigatewayStack`  deploy Api Gateway stack
+
+10.	After successful deployment of API Gateway stack, open AWS console and select Amazon API Gateway. Locate ProductRestApi in name column and note down its id from id column as highlighted in below screen.
 
     <p align="center">
     <img src="docs/Api-gateway-api-id.png" alt="API Gateway Deployed API id" />
     </p>
 
 
-## Test the solution
+## Test the example
 
-I configured the entire solution in the AWS cloud so far for a tenant in the above section Deploy cloud solution. Now let us test Amazon API Gateway Usage plan to verify it protects API based on throttle limits per second and quota limit per Day. You can configure quota limits per Day, Week and Month. 
+Test the example using the following curl command. It throttles the requests to the deployed API based on defined limits and quotas. The following thresholds are preset: API quota limit of 5 requests/day, throttle limit of 10 requests/second, and a burst limit of 2 requests/second. 
 
-We configured the “/products” API Quota limit to 5 per Day and throttle limit as 10/sec rate limit and 2/sec burst limit
+To simulate the scenario and start throttling requests.
 
-Execute the following command 5 times after replacing placeholders with the correct values. You should receive the message {"message": "Limit Exceeded"} after you execute below command for the sixth time. You can manually change the quota limits in usage plan in AWS Console and repeat the tests.
+1.	Open a terminal window.
+2.	Install the curl utility if necessary.
+3.	Run the following command six times after replacing placeholders with the correct values.
 
 `curl -H "Authorization: Bearer <REPLACE WITH ID_TOKEN received in step 5 of Deploy Amazon Cognito Resources>" -X GET https://<REPLACE WITH REST API ID noted in step 3 of Deploy Amazon API Gateway resources>.execute-api.eu-west-1.amazonaws.com/dev/products.`
 
-You can monitor HTTP/2 429 exceptions (Limit Exceeded) in Amazon API Gateway dashboard when API Gateway throttles the requests.
+You receive the message {“message": "Limit Exceeded"} after you run the command for the sixth time. To repeat the tests, navigate to the API Gateway console. Change the quota limits in the usage plan and run the preceding command again. You can monitor HTTP/2 429 exceptions (Limit Exceeded) in API Gateway dashboard.
 
 <p align="center">
 <img src="docs/api-gateway-dashboard.png" alt="API Gateway metrics dashboard" />
 </p>
 
-Any changes to usage plan limits do not need redeployment of API in Amazon API Gateway. You can change limits dynamically. However, please note that it may take 5-10 sec to come limits into effect.
+Any changes to usage plan limits do not need redeployment of the API in API Gateway. You can change limits dynamically. Changes take a few seconds to become effective.
 
 ### Clean up
 
-To avoid incurring future charges, please clean up the resources created.
+To avoid incurring future charges, clean up the resources created. To delete the CDK stack, use the following command. Since there are multiple stacks, you must explicitly specify the name of the stacks.
 
-To remove the stack:
+    * cdk destroy CognitoStack ApigatewayStack
 
-1. run below cdk command
-    * `cdk destroy *`   deletes all the AWS cloud resources deployed
+
+#### Conclusion
+
+This post covers the API Gateway usage plan feature to protect multi-tenant APIs from excessive request loads and also as a product offering that enforces customer specific usage quotas. 
+
+To learn more about Amazon API Gateway, refer to [Amazon API Gateway documentation](https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html).  
 
 
 ## Security
