@@ -51,7 +51,7 @@ cost for using this sample. For full details, see the pricing pages for each AWS
 5.	Create a user with tenant id.
 
     * `aws cognito-idp admin-create-user --user-pool-id <REPLACE WITH COGNITO POOL ID> --username <REPLACE WITH USERNAME> \
-    --user-attributes Name="given_name",Value="<REPLACE WITH FIRST NAME>" Name="family_name",Value="<REPLACE WITH LAST NAME>" " Name="custom:tenant_id",Value="<REPLACE WITH CUSTOMER ID>" \
+    --user-attributes Name="given_name",Value="<REPLACE WITH FIRST NAME>" Name="family_name",Value="<REPLACE WITH LAST NAME>" " Name="custom:tenant_id",Value="<REPLACE WITH TENANT ID>" \
     --temporary-password change1t`
 
 
@@ -60,7 +60,7 @@ cost for using this sample. For full details, see the pricing pages for each AWS
 
 7.	Test Oauth flow [open id connect](https://openidconnect.net/) using to get the JWT ID Token. Save the token in nodepad.
 
-8.	Open aws-usage-policy-stack/app.ts in an IDE and replace “NOT_DEFINED” with 20 chars long tenant id from step 3 in Deploy Amazon Cognito Resources. 
+8.	Open aws-usage-policy-stack/app.ts in an IDE and replace “NOT_DEFINED” with 20 chars long tenant id defined in the step 5. 
 9.	Configure user pool in Amazon API Gateway and upload Lambda
     * `npx cdk deploy ApigatewayStack`  deploy Api Gateway stack
 
@@ -81,7 +81,7 @@ To simulate the scenario and start throttling requests.
 2.	Install the curl utility if necessary.
 3.	Run the following command six times after replacing placeholders with the correct values.
 
-`curl -H "Authorization: Bearer <REPLACE WITH ID_TOKEN received in step 5 of Deploy Amazon Cognito Resources>" -X GET https://<REPLACE WITH REST API ID noted in step 3 of Deploy Amazon API Gateway resources>.execute-api.eu-west-1.amazonaws.com/dev/products.`
+`curl -H "Authorization: Bearer <REPLACE WITH ID_TOKEN received in step 7 of Deploy the example>" -X GET https://<REPLACE WITH REST API ID noted in step 10 of Deploy the example>.execute-api.eu-west-1.amazonaws.com/dev/products.`
 
 You receive the message {“message": "Limit Exceeded"} after you run the command for the sixth time. To repeat the tests, navigate to the API Gateway console. Change the quota limits in the usage plan and run the preceding command again. You can monitor HTTP/2 429 exceptions (Limit Exceeded) in API Gateway dashboard.
 
